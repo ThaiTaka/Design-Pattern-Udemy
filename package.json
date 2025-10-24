@@ -1,0 +1,32 @@
+{
+  "name": "elearning-platform",
+  "version": "1.0.0",
+  "description": "Production-ready E-Learning Platform (Udemy-like) with Design Patterns",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "predev": "node scripts/cleanup.js",
+    "dev": "npm run docker:up && npm run wait-db && npm run setup:backend && concurrently --kill-others --names \"BACKEND,FRONTEND\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:clean": "docker-compose down -v",
+    "wait-db": "node scripts/wait-for-db.js",
+    "setup:backend": "cd backend && npm run prisma:generate && npm run prisma:migrate:dev && npm run prisma:seed",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "install:all": "npm install && npm install -w frontend && npm install -w backend",
+    "prisma:studio": "cd backend && npm run prisma:studio",
+    "build": "npm run build -w frontend && npm run build -w backend",
+    "clean": "rimraf frontend/dist frontend/node_modules backend/dist backend/node_modules node_modules"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}
