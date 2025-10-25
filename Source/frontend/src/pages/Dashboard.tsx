@@ -1,13 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
 import { authAPI } from '../services/api';
 import { BookOpen, Clock, Award, TrendingUp, Flame, Star, Play } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const Dashboard = () => {
+  // Check if user is logged in
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ['profile'],
     queryFn: () => authAPI.getProfile().then(res => res.data),
+    retry: false, // Don't retry on 401
   });
 
   if (isLoading) {

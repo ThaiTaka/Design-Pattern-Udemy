@@ -1,0 +1,191 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  ALL_LEVELS
+}
+
+enum Language {
+  ENGLISH
+  VIETNAMESE
+  SPANISH
+  FRENCH
+  GERMAN
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(STUDENT)
+  avatar    String?
+  bio       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  coursesCreated    Course[]           @relation("CourseInstructor")
+  enrollments       Enrollment[]
+  reviews           Review[]
+  lessonProgress    LessonProgress[]
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  slug      String   @unique
+  icon      String   // Lucide icon name
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  courses Course[]
+
+  @@index([slug])
+  @@map("categories")
+}
+
+model Course {
+  id          String      @id @default(uuid())
+  title       String
+  slug        String      @unique
+  description String
+  thumbnail   String
+  price       Float
+  discount    Float       @default(0)
+  level       CourseLevel
+  language    Language    @default(ENGLISH)
+  duration    Int         // Total duration in minutes
+  isPublished Boolean     @default(true)
+  isFeatured  Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Foreign Keys
+  instructorId String
+  categoryId   String
+
+  // Relations
+  instructor     User             @relation("CourseInstructor", fields: [instructorId], references: [id], onDelete: Cascade)
+  category       Category         @relation(fields: [categoryId], references: [id])
+  lessons        Lesson[]
+  enrollments    Enrollment[]
+  reviews        Review[]
+
+  @@index([slug])
+  @@index([instructorId])
+  @@index([categoryId])
+  @@index([isPublished])
+  @@index([isFeatured])
+  @@map("courses")
+}
+
+model Lesson {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  videoUrl    String?
+  duration    Int      // Duration in seconds
+  order       Int
+  isFree      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Foreign Keys
+  courseId String
+
+  // Relations
+  course         Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonProgress LessonProgress[]
+
+  @@index([courseId])
+  @@index([order])
+  @@map("lessons")
+}
+
+model Enrollment {
+  id          String    @id @default(uuid())
+  progress    Float     @default(0) // 0-100
+  enrolledAt  DateTime  @default(now())
+  completedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  // Foreign Keys
+  userId   String
+  courseId String
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@map("enrollments")
+}
+
+model LessonProgress {
+  id              String   @id @default(uuid())
+  isCompleted     Boolean  @default(false)
+  watchedDuration Int      @default(0) // Seconds watched
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Foreign Keys
+  userId   String
+  lessonId String
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
+  @@map("lesson_progress")
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int      // 1-5
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Foreign Keys
+  userId   String
+  courseId String
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([rating])
+  @@map("reviews")
+}

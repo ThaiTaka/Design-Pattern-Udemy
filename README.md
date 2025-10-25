@@ -9,6 +9,41 @@ A **production-ready**, **full-stack** E-Learning platform built with modern tec
 
 ---
 
+## 🚀 Quick Start
+
+### Yêu cầu hệ thống
+- **Docker Desktop** (để chạy PostgreSQL và Redis)
+- **Node.js 18+** và **npm**
+
+### Chạy toàn bộ dự án với một lệnh
+```bash
+npm run dev
+```
+
+Lệnh này sẽ tự động:
+1. ✅ Khởi động Docker containers (PostgreSQL + Redis + Adminer)
+2. ✅ Đợi database sẵn sàng
+3. ✅ Setup database schema và seed data
+4. ✅ Chạy backend (port 5000) và frontend (port 3000) đồng thời
+5. ✅ Mở browser tự động tại http://localhost:3000
+
+### Truy cập ứng dụng
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:5000  
+- **Database Admin**: http://localhost:8080 (user: `elearning`, pass: `elearning123`)
+
+### Tài khoản test
+| Role | Email | Password |
+|------|-------|----------|
+| Student | student@test.com | password123 |
+| Instructor | instructor@test.com | password123 |
+| Admin | admin@test.com | password123 |
+
+📖 **Hướng dẫn chi tiết**: Xem file [`SETUP.md`](./SETUP.md)  
+📊 **Báo cáo Design Patterns**: Xem file [`REPORT.md`](./REPORT.md)
+
+---
+
 ## ✨ Features
 
 ### 🎨 Frontend

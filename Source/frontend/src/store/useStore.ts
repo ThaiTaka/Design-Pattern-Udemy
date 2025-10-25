@@ -32,7 +32,12 @@ export const useAuthStore = create<AuthStore>()(
         localStorage.removeItem('user');
         set({ user: null, token: null });
       },
-      isAuthenticated: () => !!get().token,
+      isAuthenticated: () => {
+        // Check both zustand state and localStorage
+        const stateToken = get().token;
+        const localToken = localStorage.getItem('token');
+        return !!(stateToken || localToken);
+      },
     }),
     {
       name: 'auth-storage',

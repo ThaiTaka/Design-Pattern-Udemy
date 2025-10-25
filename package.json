@@ -1,32 +1,24 @@
 {
-  "name": "elearning-platform",
+  "name": "design-pattern-udemy",
   "version": "1.0.0",
-  "description": "Production-ready E-Learning Platform (Udemy-like) with Design Patterns",
+  "description": "E-Learning Platform with Design Patterns - Full Stack Application",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
   "scripts": {
-    "predev": "node scripts/cleanup.js",
-    "dev": "npm run docker:up && npm run wait-db && npm run setup:backend && concurrently --kill-others --names \"BACKEND,FRONTEND\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down",
-    "docker:clean": "docker-compose down -v",
-    "wait-db": "node scripts/wait-for-db.js",
-    "setup:backend": "cd backend && npm run prisma:generate && npm run prisma:migrate:dev && npm run prisma:seed",
-    "dev:backend": "cd backend && npm run dev",
-    "dev:frontend": "cd frontend && npm run dev",
-    "install:all": "npm install && npm install -w frontend && npm install -w backend",
-    "prisma:studio": "cd backend && npm run prisma:studio",
-    "build": "npm run build -w frontend && npm run build -w backend",
-    "clean": "rimraf frontend/dist frontend/node_modules backend/dist backend/node_modules node_modules"
+    "dev": "cd Executable && npm run dev",
+    "docker:up": "cd Executable && docker-compose up -d",
+    "docker:down": "cd Executable && docker-compose down",
+    "docker:clean": "cd Executable && docker-compose down -v",
+    "install:all": "npm install && cd Executable && npm install && cd ../Source/frontend && npm install && cd ../backend && npm install",
+    "setup": "npm run install:all && npm run docker:up",
+    "clean": "cd Executable && npm run clean && cd ../Source/frontend && rm -rf node_modules dist && cd ../backend && rm -rf node_modules dist",
+    "prisma:studio": "cd Source/backend && npm run prisma:studio"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "rimraf": "^5.0.5"
   },
   "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=10.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }

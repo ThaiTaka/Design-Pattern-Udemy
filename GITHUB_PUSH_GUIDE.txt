@@ -1,0 +1,25 @@
+﻿#  HƯỚNG DẪN PUSH LÊN GITHUB
+
+## Sau khi tạo repository trên GitHub, chạy các lệnh sau:
+
+# Thay YOUR_USERNAME bằng username GitHub của bạn
+git remote add origin https://github.com/YOUR_USERNAME/elearning-platform.git
+
+# Đổi tên branch sang main (nếu muốn)
+git branch -M main
+
+# Push code lên GitHub
+git push -u origin main
+
+# Hoặc nếu dùng master:
+git push -u origin master
+
+## Nếu gặp lỗi xác thực, dùng Personal Access Token:
+# 1. Vào GitHub Settings > Developer settings > Personal access tokens
+# 2. Generate new token (classic)
+# 3. Chọn quyền: repo (full control)
+# 4. Copy token và dùng thay cho password khi push
+
+## Ví dụ với token:
+git remote set-url origin https://YOUR_TOKEN@github.com/YOUR_USERNAME/elearning-platform.git
+git push -u origin main
